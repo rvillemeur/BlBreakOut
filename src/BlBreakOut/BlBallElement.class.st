@@ -26,7 +26,7 @@ BlBallElement >> animation [
 
 	animation addEventHandler: (BlEventHandler
 			 on: BlAnimationLoopDoneEvent
-			 do: [ :anEvent | self setPosition ]).
+			 do: [ :anEvent | parent moveBall ]).
 
 	^ animation
 ]
@@ -63,45 +63,35 @@ BlBallElement >> initialize [
 		background: Color yellow;
 		border: (BlBorder paint: Color black width: 1).
 	speed := 3.
-	direction := 1 @ 1
+	direction := -1 @ -1
 ]
 
 { #category : 'testing' }
-BlBallElement >> isNextPositionAbove: aRectangle [
+BlBallElement >> isNextPosition: aPoint above: aRectangle [
 	"Return true whether the next position is above the rectangle"
 
-	^ self nextPosition y - 4 < aRectangle top
+	| yOfNextPosition |
+	yOfNextPosition := aPoint y.
+	^ yOfNextPosition - 4 < aRectangle top
 ]
 
 { #category : 'testing' }
-BlBallElement >> isNextPositionBelow: aRectangle [
+BlBallElement >> isNextPosition: aPoint below: aRectangle [
 	"Return true whether the next position is below the rectangle"
-
-	^ self nextPosition y + 4 >= aRectangle bottom
+	| yOfNextPosition |
+	yOfNextPosition := aPoint y.
+	
+	^ yOfNextPosition + 4 >= aRectangle bottom
 ]
 
 { #category : 'testing' }
-BlBallElement >> isNextPositionLeft: aRectangle [
-	"Return true whether the next position is to the left of the rectangle"
-
-	^ self nextPosition x - 4 < aRectangle left
-]
-
-{ #category : 'testing' }
-BlBallElement >> isNextPositionRight: aRectangle [
+BlBallElement >> isNextPosition: aPoint verticallyInside: aRectangle [
 	"Return true whether the next position is to the right of the rectangle"
 
-	^ self nextPosition x + 4 > aRectangle right
-]
-
-{ #category : 'testing' }
-BlBallElement >> isNextPositionVerticallyInside: aRectangle [
-	"Return true whether the next position is to the right of the rectangle"
-
-	| nextPosition |
-	nextPosition := self nextPosition x.
-	^ nextPosition + 4 > aRectangle right or: [
-		  nextPosition - 4 < aRectangle left ]
+	| xOfNextPosition |
+	xOfNextPosition := aPoint x.
+	^ xOfNextPosition + 4 > aRectangle right or: [
+		  xOfNextPosition - 4 < aRectangle left ]
 ]
 
 { #category : 'positioning' }
@@ -124,28 +114,8 @@ BlBallElement >> positionAtStart [
 	| position center bottom |
 	position := parent extent.
 	center := position x / 2.
-	bottom := position y.
+	bottom := position y - 15.
 	self position: center - 15 @ bottom - 6
-]
-
-{ #category : 'positioning' }
-BlBallElement >> setPosition [
-
-	| ownerBounds |
-	ownerBounds := Rectangle origin: 0 @ 0 corner: parent extent.
-
-	(self isNextPositionVerticallyInside: ownerBounds)
-		ifTrue: [
-			self bounceLeftRight.
-			^ self ]
-		ifFalse: [
-			(self isNextPositionBelow: ownerBounds)
-				ifTrue: [ self bounceTopBottom ]
-				ifFalse: [
-					(self isNextPositionAbove: ownerBounds)
-						ifTrue: [ self bounceTopBottom ]
-						ifFalse: [ self moveToNextPosition ] ].
-			^ self ]
 ]
 
 { #category : 'animation' }

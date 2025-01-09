@@ -31,6 +31,23 @@ BlBreakoutField >> batter: aBatterElement [
 	self addChild: aBatterElement
 ]
 
+{ #category : 'positioning' }
+BlBreakoutField >> ifBallNotBouncedOnWall: aPoint [
+
+	| fieldBounds |
+	fieldBounds := Rectangle origin: 0 @ 0 corner: self extent.
+	(ball isNextPosition: aPoint verticallyInside: fieldBounds) ifTrue: [
+		ball bounceLeftRight.
+		^ false ].
+	aPoint y > batter position y ifTrue: [
+		self lostABall.
+		^ false ].
+	(ball isNextPosition: aPoint above: fieldBounds) ifTrue: [
+		ball bounceTopBottom.
+		^ false ].
+	^ true
+]
+
 { #category : 'initialization' }
 BlBreakoutField >> initialize [
 
@@ -59,4 +76,20 @@ BlBreakoutField >> initialize [
 		ball positionAtStart.
 		batter positionAtStart.
 		ball startAnimation ]
+]
+
+{ #category : 'positioning' }
+BlBreakoutField >> lostABall [
+
+	self inform: 'You die'
+]
+
+{ #category : 'positioning' }
+BlBreakoutField >> moveBall [
+
+	| nextPosition |
+	nextPosition := ball nextPosition.
+	(self ifBallNotBouncedOnWall: nextPosition) ifFalse: [ ^ self ].
+	(batter bounds bounds containsPoint: nextPosition) ifTrue: [ ball bounceTopBottom ].
+	ball moveToNextPosition
 ]

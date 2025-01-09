@@ -20,13 +20,13 @@ BlBatterElement >> initialize [
 	speed := 15
 ]
 
-{ #category : 'api - configuration' }
+{ #category : 'moves' }
 BlBatterElement >> moveLeft [
 
 	self position: self position - (self xToMoveLeft @0)
 ]
 
-{ #category : 'api - configuration' }
+{ #category : 'moves' }
 BlBatterElement >> moveRight [
 
 	self position: self position + (self xToMoveRight @ 0)
@@ -42,13 +42,13 @@ BlBatterElement >> positionAtStart [
 	self position: (center @ bottom - self extent y - 5)
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'moves' }
 BlBatterElement >> xToMoveLeft [
 ^ speed min: (self position x - 0)
 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'moves' }
 BlBatterElement >> xToMoveRight [
 	"Return the x so that the receiver can move to the right without existing the field"
 

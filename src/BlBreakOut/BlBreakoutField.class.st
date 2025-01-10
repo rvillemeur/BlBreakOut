@@ -240,9 +240,11 @@ BlBreakoutField >> initializeKeyboardShortcuts [
 	self addShortcut: (BlShortcutWithAction new
 			 combination: BlKeyCombination builder space build;
 			 action: [ :anEvent :aShortcut |
+				"don't forget this, otherwise, you may end adding multiple animation to your ball."
+				anEvent consumed: true.
 				 self isPaused
-					 ifTrue: [ self restartPausedGame ]
-					 ifFalse: [ self pauseGame ] ]).
+					 ifTrue: [ anEvent currentTarget restartPausedGame ]
+					 ifFalse: [ anEvent currentTarget pauseGame ] ]).
 
 	"necessary, otherwise, keyboard shortcut are not taken into account"
 	self requestFocus
@@ -354,6 +356,5 @@ BlBreakoutField >> setBallAndBatterPositionAtStart [
 	"the size is not available to children until rendered at least once."
 
 	self addEventHandlerOn: BlElementExtentChangedEvent do: [ :evt |
-		ball positionAtStart.
-		batter positionAtStart ]
+		self resetBallAndBatterPositionAtStart ]
 ]

@@ -17,6 +17,72 @@ Class {
 	#package : 'BlBreakOut'
 }
 
+{ #category : 'examples' }
+BlBreakoutField class >> BrickDescriptionExample [
+
+	<sampleInstance>
+	^ (BlBreakoutField new brickClassFromDescription: $S) new openInNewSpace 
+]
+
+{ #category : 'template' }
+BlBreakoutField class >> generateEmptyTemplate [
+	"Generate an empty level description template"
+
+	| aStream |
+	aStream := ReadWriteStream on: (String new: 100).
+	self maximumRowNumber timesRepeat: [
+		self maximumColumnNumber timesRepeat: [ aStream nextPut: $E ].
+		aStream nextPut: Character cr ].
+	^ aStream contents
+]
+
+{ #category : 'level' }
+BlBreakoutField class >> level0 [
+"S as normal Brick, E as empty slot, and X as resistant Brick"
+	^ 'SSSSSSSS
+EEEEEEEE
+SSSSSSSS
+EUEEEEUE
+SSSSSSSS
+EEEEEEEE
+SSSSSSSS
+EEEEEEEE
+XXXXXXXX
+EEEEEEEE
+SSSSSSSS
+EEEEEEEE
+XXXXXXXX
+'
+]
+
+{ #category : 'examples' }
+BlBreakoutField class >> levelExample [
+
+	<sampleInstance>
+	^ self  generateEmptyTemplate
+]
+
+{ #category : 'default' }
+BlBreakoutField class >> maximumColumnNumber [
+	"Return the number of rows that the field has"
+
+	^ self playFieldSize x
+]
+
+{ #category : 'default' }
+BlBreakoutField class >> maximumRowNumber [
+	"Return the maximum number of brick lines that the field can have"
+
+	^ self playFieldSize y - 13
+]
+
+{ #category : 'default' }
+BlBreakoutField class >> playFieldSize [
+	"Return the size of the complete game area expressed in terms of brick rows and columns"
+
+	^ 8 @ 26
+]
+
 { #category : 'adding' }
 BlBreakoutField >> addBrick: aBrickElement [
 
@@ -39,6 +105,14 @@ BlBreakoutField >> batter: aBatterElement [
 	self addChild: aBatterElement
 ]
 
+{ #category : 'level handling' }
+BlBreakoutField >> brickClassFromDescription: aCharacter [
+
+	aCharacter = $S ifTrue: [ ^ BlBrickElement ].
+	aCharacter = $X ifTrue: [ ^ BlResistantBrickElement ].
+	aCharacter = $U ifTrue: [ ^ BlUndestroyableBrickElement ]
+]
+
 { #category : 'positioning' }
 BlBreakoutField >> brickContainingOrNil: aPoint [
 	"Return the brick containing the point aPoint or nil if none of the bricks contains the point"
@@ -48,13 +122,20 @@ BlBreakoutField >> brickContainingOrNil: aPoint [
 		  ifNone: [ nil ]
 ]
 
+{ #category : 'level handling' }
+BlBreakoutField >> brickDesccriptionAtColumn: aColumn row: aRow [
+	"Return the character description been at the position given by aPoint"
+
+	^ aColumn + (aRow - 1 * (self class maximumColumnNumber + 1))
+]
+
 { #category : 'initialization' }
 BlBreakoutField >> brickLine: y [
 
 	self brickLine: y ofKind: BlBrickElement
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'adding' }
 BlBreakoutField >> brickLine: y ofKind: aBrickClass [
 
 	| b |
@@ -96,6 +177,7 @@ BlBreakoutField >> initialize [
 	self ball: BlBallElement new.
 	self batter: BlBatterElement new.
 	self initializeBricks.
+	self installLevel: self class level0.
 
 	self addShortcut: (BlShortcutWithAction new
 			 combination: BlKeyCombination builder n build;
@@ -117,9 +199,22 @@ BlBreakoutField >> initialize [
 BlBreakoutField >> initializeBricks [
 
 	bricks := OrderedCollection new.
-	0 to: self playFieldSize y - 12 do: [ :y | self brickLine: y ].
-	self resistantBrickLine: self playFieldSize y - 11
 
+]
+
+{ #category : 'level handling' }
+BlBreakoutField >> installLevel: aDescription [
+	"Create all the bricks as specified by the description"
+
+	| char brick |
+	1 to: self class maximumRowNumber do: [ :row |
+		1 to: self class maximumColumnNumber do: [ :column |
+			char := aDescription at:
+				        (self brickDesccriptionAtColumn: column row: row).
+			char = $E ifFalse: [
+				brick := (self brickClassFromDescription: char) new.
+				self addBrick: brick.
+				self placeBrick: brick atBrickCoordinate: column - 1 @ (row - 1) ] ] ]
 ]
 
 { #category : 'positioning' }
@@ -143,11 +238,22 @@ BlBreakoutField >> moveBall [
 	ball moveToNextPosition
 ]
 
-{ #category : 'initialization' }
+{ #category : 'bricks' }
+BlBreakoutField >> placeBrick: aBrick atBrickCoordinate: aPoint [
+	"Place the given brick at the given position taking into account the default size of bricks"
+
+	| brickSize |
+	brickSize := BlBrickElement defaultBrickSize.
+	aBrick extent: brickSize.
+	aBrick position: aPoint * brickSize + self position
+]
+
+{ #category : 'default' }
 BlBreakoutField >> playFieldSize [
 	"Return the size of the complete game area expressed in terms of brick rows and columns"
 
-	^ 8 @ 26
+	^  self class playFieldSize
+
 ]
 
 { #category : 'removing' }

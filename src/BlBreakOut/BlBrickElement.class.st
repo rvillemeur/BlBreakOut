@@ -26,6 +26,7 @@ BlBrickElement class >> descriptionCharacter [
 BlBrickElement >> actionWhenBumpedBy: aBall [
 
 	aBall bounceTopBottom.
+	self parent increaseScoreBy: 10.
 	self parent removeBrick: self.
 	self parent removeChild: self.
 ]

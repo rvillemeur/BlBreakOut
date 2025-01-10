@@ -12,7 +12,10 @@ Class {
 		'ball',
 		'batter',
 		'bricks',
-		'brickDescriptions'
+		'brickDescriptions',
+		'score',
+		'paused',
+		'lifes'
 	],
 	#category : 'BlBreakOut',
 	#package : 'BlBreakOut'
@@ -84,7 +87,7 @@ BlBreakoutField class >> playFieldSize [
 	^ 8 @ 26
 ]
 
-{ #category : 'adding' }
+{ #category : 'bricks' }
 BlBreakoutField >> addBrick: aBrickElement [
 
 	self addChild: aBrickElement.
@@ -128,13 +131,13 @@ BlBreakoutField >> brickDesccriptionAtColumn: aColumn row: aRow [
 	^ aColumn + (aRow - 1 * (self class maximumColumnNumber + 1))
 ]
 
-{ #category : 'initialization' }
+{ #category : 'bricks' }
 BlBreakoutField >> brickLine: y [
 
 	self brickLine: y ofKind: BlBrickElement
 ]
 
-{ #category : 'adding' }
+{ #category : 'bricks' }
 BlBreakoutField >> brickLine: y ofKind: aBrickClass [
 
 	| b |
@@ -164,34 +167,36 @@ BlBreakoutField >> ifBallNotBouncedOnWall: aPoint [
 	^ true
 ]
 
+{ #category : 'scoring' }
+BlBreakoutField >> increaseScoreBy: aNumber [
+
+	score := score + aNumber
+]
+
 { #category : 'initialization' }
 BlBreakoutField >> initialize [
 
 	super initialize.
-	self
-		geometry: BlRectangleGeometry new;
-		size: BlBrickElement defaultBrickSize * self playFieldSize;
-		background: (Color red alpha: 0.5);
-		border: (BlBorder paint: Color black width: 1).
-	self ball: BlBallElement new.
-	self batter: BlBatterElement new.
+	self initializeFieldProperties.
+	self initializeKeyboardShortcuts.
+	self initializeBallElement.
+	self initializeBatterElement.
+	self setBallAndBatterPositionAtStart.
 	self initializeBricks.
 	self installLevel: self class level0.
+	self initializeGame
+]
 
-	self addShortcut: (BlShortcutWithAction new
-			 combination: BlKeyCombination builder n build;
-			 action: [ :anEvent :aShortcut | batter moveLeft ]).
-	self addShortcut: (BlShortcutWithAction new
-			 combination: BlKeyCombination builder m build;
-			 action: [ :anEvent :aShortcut | batter moveRight ]).
+{ #category : 'initialization' }
+BlBreakoutField >> initializeBallElement [
 
-	"necessary, otherwise, keyboard shortcut are not taken into account"
-	self requestFocus.
-	"the size is not available to children until rendered at least once."
-	self addEventHandlerOn: BlElementExtentChangedEvent do: [ :evt |
-		ball positionAtStart.
-		batter positionAtStart.
-		ball startAnimation ]
+	self ball: BlBallElement new
+]
+
+{ #category : 'initialization' }
+BlBreakoutField >> initializeBatterElement [
+
+	self batter: BlBatterElement new
 ]
 
 { #category : 'initialization' }
@@ -201,6 +206,46 @@ BlBreakoutField >> initializeBricks [
 	brickDescriptions := Dictionary new.
 	BlBrickElement withAllSubclasses do: [ :aClass |
 		brickDescriptions at: aClass descriptionCharacter put: aClass ]
+]
+
+{ #category : 'initialization' }
+BlBreakoutField >> initializeFieldProperties [
+
+	self
+		geometry: BlRectangleGeometry new;
+		size: BlBrickElement defaultBrickSize * self playFieldSize;
+		background: (Color red alpha: 0.5);
+		border: (BlBorder paint: Color black width: 1).
+		
+
+]
+
+{ #category : 'initialization' }
+BlBreakoutField >> initializeGame [
+
+	score := 0.
+	lifes := 4.
+	self pauseGame
+]
+
+{ #category : 'initialization' }
+BlBreakoutField >> initializeKeyboardShortcuts [
+
+	self addShortcut: (BlShortcutWithAction new
+			 combination: BlKeyCombination builder n build;
+			 action: [ :anEvent :aShortcut | batter moveLeft ]).
+	self addShortcut: (BlShortcutWithAction new
+			 combination: BlKeyCombination builder m build;
+			 action: [ :anEvent :aShortcut | batter moveRight ]).
+	self addShortcut: (BlShortcutWithAction new
+			 combination: BlKeyCombination builder space build;
+			 action: [ :anEvent :aShortcut |
+				 self isPaused
+					 ifTrue: [ self restartPausedGame ]
+					 ifFalse: [ self pauseGame ] ]).
+
+	"necessary, otherwise, keyboard shortcut are not taken into account"
+	self requestFocus
 ]
 
 { #category : 'level handling' }
@@ -218,10 +263,22 @@ BlBreakoutField >> installLevel: aDescription [
 				self placeBrick: brick atBrickCoordinate: column - 1 @ (row - 1) ] ] ]
 ]
 
-{ #category : 'positioning' }
-BlBreakoutField >> lostABall [
+{ #category : 'game logic' }
+BlBreakoutField >> isPaused [
 
-	self inform: 'You die'
+	^ paused
+]
+
+{ #category : 'game logic' }
+BlBreakoutField >> lostABall [
+	lifes isZero ifTrue: [
+		self inform: 'You die'.
+		self pauseGame.
+		^ self ].
+	lifes := lifes - 1.
+	self pauseGame.
+	self resetBallAndBatterPositionAtStart.
+	
 ]
 
 { #category : 'positioning' }
@@ -237,6 +294,13 @@ BlBreakoutField >> moveBall [
 	b ifNotNil: [ b actionWhenBumpedBy: ball ].
 
 	ball moveToNextPosition
+]
+
+{ #category : 'game logic' }
+BlBreakoutField >> pauseGame [
+
+	paused := true.
+	ball stopAnimation
 ]
 
 { #category : 'bricks' }
@@ -265,7 +329,31 @@ BlBreakoutField >> removeBrick: aBrickElement [
 ]
 
 { #category : 'initialization' }
+BlBreakoutField >> resetBallAndBatterPositionAtStart [
+	"the size is not available to children until rendered at least once."
+
+	ball positionAtStart.
+	batter positionAtStart
+]
+
+{ #category : 'bricks' }
 BlBreakoutField >> resistantBrickLine: y [
 
 	self brickLine: y ofKind: BlResistantBrickElement
+]
+
+{ #category : 'game logic' }
+BlBreakoutField >> restartPausedGame [
+
+	paused := false.
+	ball startAnimation
+]
+
+{ #category : 'initialization' }
+BlBreakoutField >> setBallAndBatterPositionAtStart [
+	"the size is not available to children until rendered at least once."
+
+	self addEventHandlerOn: BlElementExtentChangedEvent do: [ :evt |
+		ball positionAtStart.
+		batter positionAtStart ]
 ]

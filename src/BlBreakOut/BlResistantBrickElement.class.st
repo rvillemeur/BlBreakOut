@@ -8,6 +8,12 @@ Class {
 	#package : 'BlBreakOut'
 }
 
+{ #category : 'as yet unclassified' }
+BlResistantBrickElement class >> descriptionCharacter [
+
+	^ $X
+]
+
 { #category : 'action  handling' }
 BlResistantBrickElement >> actionWhenBumpedBy: aBall [
 

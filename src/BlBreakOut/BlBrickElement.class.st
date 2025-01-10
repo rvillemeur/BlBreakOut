@@ -16,6 +16,12 @@ BlBrickElement class >> defaultBrickSize [
 	^ 71 @ 15
 ]
 
+{ #category : 'as yet unclassified' }
+BlBrickElement class >> descriptionCharacter [
+
+	^ $S
+]
+
 { #category : 'action  handling' }
 BlBrickElement >> actionWhenBumpedBy: aBall [
 

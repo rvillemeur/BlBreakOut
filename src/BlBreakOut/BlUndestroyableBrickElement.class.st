@@ -6,6 +6,12 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
+BlUndestroyableBrickElement class >> descriptionCharacter [
+
+	^ $U
+]
+
+{ #category : 'as yet unclassified' }
 BlUndestroyableBrickElement >> actionWhenBumped [
 "we do nothing - original tutorial include sounds, not this version"
 "(SampledSound soundNamed: ’clink’) play"

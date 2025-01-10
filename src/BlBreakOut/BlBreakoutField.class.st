@@ -11,7 +11,8 @@ Class {
 	#instVars : [
 		'ball',
 		'batter',
-		'bricks'
+		'bricks',
+		'brickDescriptions'
 	],
 	#category : 'BlBreakOut',
 	#package : 'BlBreakOut'
@@ -108,9 +109,7 @@ BlBreakoutField >> batter: aBatterElement [
 { #category : 'level handling' }
 BlBreakoutField >> brickClassFromDescription: aCharacter [
 
-	aCharacter = $S ifTrue: [ ^ BlBrickElement ].
-	aCharacter = $X ifTrue: [ ^ BlResistantBrickElement ].
-	aCharacter = $U ifTrue: [ ^ BlUndestroyableBrickElement ]
+	^ brickDescriptions at: aCharacter
 ]
 
 { #category : 'positioning' }
@@ -199,7 +198,9 @@ BlBreakoutField >> initialize [
 BlBreakoutField >> initializeBricks [
 
 	bricks := OrderedCollection new.
-
+	brickDescriptions := Dictionary new.
+	BlBrickElement withAllSubclasses do: [ :aClass |
+		brickDescriptions at: aClass descriptionCharacter put: aClass ]
 ]
 
 { #category : 'level handling' }

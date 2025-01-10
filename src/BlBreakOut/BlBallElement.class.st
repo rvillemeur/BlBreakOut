@@ -48,6 +48,12 @@ BlBallElement >> bounceTopBottom [
 ]
 
 { #category : 'accessing' }
+BlBallElement >> direction [
+
+	^ direction
+]
+
+{ #category : 'accessing' }
 BlBallElement >> direction: aPoint [
 
 	direction := aPoint

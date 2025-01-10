@@ -50,29 +50,34 @@ BlBreakoutField >> brickContainingOrNil: aPoint [
 
 { #category : 'initialization' }
 BlBreakoutField >> brickLine: y [
-	"Add a line of brick at the y row"
+
+	self brickLine: y ofKind: BlBrickElement
+]
+
+{ #category : 'as yet unclassified' }
+BlBreakoutField >> brickLine: y ofKind: aBrickClass [
 
 	| b |
 	0 to: self playFieldSize x - 1 do: [ :i |
-		b := BlBrickElement new.
+		b := aBrickClass new.
 		b position: i @ y * b brickSize.
 		self addBrick: b ]
 ]
 
 { #category : 'positioning' }
-BlBreakoutField >> ifBallNotBouncedOnWall: arg1 [
+BlBreakoutField >> ifBallNotBouncedOnWall: aPoint [
 
-	| tmp1 |
-	tmp1 := Rectangle origin: 0 @ 0 corner: self extent.
-	(ball isNextPosition: arg1 verticallyInside: tmp1) ifTrue: [
+	| fieldBounds |
+	fieldBounds := Rectangle origin: 0 @ 0 corner: self extent.
+	(ball isNextPosition: aPoint verticallyInside: fieldBounds) ifTrue: [
 		ball bounceLeftRight.
 		^ false ].
 	nil.
-	arg1 y > batter position y ifTrue: [
+	aPoint y > (batter position y + batter height) ifTrue: [
 		self lostABall.
 		^ false ].
 	nil.
-	(ball isNextPosition: arg1 above: tmp1) ifTrue: [
+	(ball isNextPosition: aPoint above: fieldBounds) ifTrue: [
 		ball bounceTopBottom.
 		^ false ].
 	nil.
@@ -112,7 +117,9 @@ BlBreakoutField >> initialize [
 BlBreakoutField >> initializeBricks [
 
 	bricks := OrderedCollection new.
-	0 to: self playFieldSize y - 12 do: [ :y | self brickLine: y ]
+	0 to: self playFieldSize y - 12 do: [ :y | self brickLine: y ].
+	self resistantBrickLine: self playFieldSize y - 11
+
 ]
 
 { #category : 'positioning' }
@@ -128,12 +135,10 @@ BlBreakoutField >> moveBall [
 	nextPosition := ball nextPosition.
 	(self ifBallNotBouncedOnWall: nextPosition) ifFalse: [ ^ self ].
 	(batter bounds bounds containsPoint: nextPosition) ifTrue: [
-		ball bounceTopBottom.
+		batter touchedBy: ball.
 		^ self ].
 	b := self brickContainingOrNil: nextPosition.
-	b ifNotNil: [
-		ball bounceTopBottom.
-		b actionWhenBumped ].
+	b ifNotNil: [ b actionWhenBumpedBy: ball ].
 
 	ball moveToNextPosition
 ]
@@ -150,4 +155,10 @@ BlBreakoutField >> removeBrick: aBrickElement [
 	"Remove the brick element from the collections of bricks"
 
 	^ bricks remove: aBrickElement
+]
+
+{ #category : 'initialization' }
+BlBreakoutField >> resistantBrickLine: y [
+
+	self brickLine: y ofKind: BlResistantBrickElement
 ]

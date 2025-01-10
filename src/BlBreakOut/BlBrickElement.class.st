@@ -17,8 +17,9 @@ BlBrickElement class >> defaultBrickSize [
 ]
 
 { #category : 'action  handling' }
-BlBrickElement >> actionWhenBumped [
+BlBrickElement >> actionWhenBumpedBy: aBall [
 
+	aBall bounceTopBottom.
 	self parent removeBrick: self.
 	self parent removeChild: self.
 ]

@@ -11,6 +11,12 @@ BlUndestroyableBrickElement class >> descriptionCharacter [
 	^ $U
 ]
 
+{ #category : 'testing' }
+BlUndestroyableBrickElement class >> isDestroyable [
+
+	^ false
+]
+
 { #category : 'as yet unclassified' }
 BlUndestroyableBrickElement >> actionWhenBumped [
 "we do nothing - original tutorial include sounds, not this version"

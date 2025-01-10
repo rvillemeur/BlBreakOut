@@ -15,7 +15,10 @@ Class {
 		'brickDescriptions',
 		'score',
 		'paused',
-		'lifes'
+		'lifes',
+		'level',
+		'levels',
+		'destroyableBrickNumber'
 	],
 	#category : 'BlBreakOut',
 	#package : 'BlBreakOut'
@@ -26,6 +29,16 @@ BlBreakoutField class >> BrickDescriptionExample [
 
 	<sampleInstance>
 	^ (BlBreakoutField new brickClassFromDescription: $S) new openInNewSpace 
+]
+
+{ #category : 'as yet unclassified' }
+BlBreakoutField class >> gatherAllDefinedLevels [
+
+	| sortedSelector |
+	sortedSelector := (self class selectors select: [ :each |
+		                   'level*' match: each asString ])
+		                  asSortedCollection.
+	^ sortedSelector collect: [ :levelSel | self perform: levelSel ]
 ]
 
 { #category : 'template' }
@@ -56,6 +69,25 @@ EEEEEEEE
 SSSSSSSS
 EEEEEEEE
 XXXXXXXX
+'
+]
+
+{ #category : 'as yet unclassified' }
+BlBreakoutField class >> level1 [
+
+	^ 'SSSSSSSS
+SXXXXXXX
+SEEEEEEE
+SEEEEEEE
+SSSSSSSS
+SXXXXXXX
+SEEEEEEE
+SEEEEEEE
+SESEESSS
+SESEESES
+SESEESES
+SESEESES
+SESSESSS
 '
 ]
 
@@ -183,7 +215,7 @@ BlBreakoutField >> initialize [
 	self initializeBatterElement.
 	self setBallAndBatterPositionAtStart.
 	self initializeBricks.
-	self installLevel: self class level0.
+	self installLevels.
 	self initializeGame
 ]
 
@@ -225,6 +257,8 @@ BlBreakoutField >> initializeGame [
 
 	score := 0.
 	lifes := 4.
+	level := 1.
+	self installCurrentLevel.
 	self pauseGame
 ]
 
@@ -251,6 +285,16 @@ BlBreakoutField >> initializeKeyboardShortcuts [
 ]
 
 { #category : 'level handling' }
+BlBreakoutField >> installCurrentLevel [
+
+	self installLevel: (levels at: level).
+	destroyableBrickNumber := bricks inject: 0 into: [:sum :each |
+		                          sum + (each isDestroyable
+			                                  ifTrue: [ 1 ]
+			                                  ifFalse: [ 0 ]) ]
+]
+
+{ #category : 'level handling' }
 BlBreakoutField >> installLevel: aDescription [
 	"Create all the bricks as specified by the description"
 
@@ -263,6 +307,37 @@ BlBreakoutField >> installLevel: aDescription [
 				brick := (self brickClassFromDescription: char) new.
 				self addBrick: brick.
 				self placeBrick: brick atBrickCoordinate: column - 1 @ (row - 1) ] ] ]
+]
+
+{ #category : 'initialization' }
+BlBreakoutField >> installLevels [
+
+	levels := self class gatherAllDefinedLevels
+]
+
+{ #category : 'level handling' }
+BlBreakoutField >> installNextLevel [
+
+	self pauseGame.
+	level := self isLastLevel
+		         ifTrue: [ 1 ]
+		         ifFalse: [ level + 1 ].
+	bricks do: [:each | each delete].
+	self installCurrentLevel.
+	self resetBallAndBatterPositionAtStart
+]
+
+{ #category : 'testing' }
+BlBreakoutField >> isLastLevel [
+	"Return whether the current level is the last one defined"
+
+	^ levels size = level
+]
+
+{ #category : 'testing' }
+BlBreakoutField >> isLevelTerminated [
+
+	^ destroyableBrickNumber isZero
 ]
 
 { #category : 'game logic' }
@@ -294,6 +369,7 @@ BlBreakoutField >> moveBall [
 		^ self ].
 	b := self brickContainingOrNil: nextPosition.
 	b ifNotNil: [ b actionWhenBumpedBy: ball ].
+	self isLevelTerminated ifTrue: [ self installNextLevel ].
 
 	ball moveToNextPosition
 ]
@@ -327,7 +403,8 @@ BlBreakoutField >> playFieldSize [
 BlBreakoutField >> removeBrick: aBrickElement [
 	"Remove the brick element from the collections of bricks"
 
-	^ bricks remove: aBrickElement
+	bricks remove: aBrickElement.
+	destroyableBrickNumber := destroyableBrickNumber - 1
 ]
 
 { #category : 'initialization' }

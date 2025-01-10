@@ -22,6 +22,12 @@ BlBrickElement class >> descriptionCharacter [
 	^ $S
 ]
 
+{ #category : 'testing' }
+BlBrickElement class >> isDestroyable [
+
+	^ true
+]
+
 { #category : 'action  handling' }
 BlBrickElement >> actionWhenBumpedBy: aBall [
 

@@ -290,7 +290,7 @@ BlBreakoutField >> installCurrentLevel [
 
 	self installLevel: (levels at: level).
 	destroyableBrickNumber := bricks inject: 0 into: [:sum :each |
-		                          sum + (each isDestroyable
+		                          sum + (each class isDestroyable
 			                                  ifTrue: [ 1 ]
 			                                  ifFalse: [ 0 ]) ]
 ]

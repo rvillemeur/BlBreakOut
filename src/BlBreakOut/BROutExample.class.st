@@ -24,6 +24,22 @@ BROutExample class >> sampleButton [
 ]
 
 { #category : 'examples' }
+BROutExample class >> sampleLEDText [
+
+	<sampleInstance>
+	^ BROutLEDText new openInNewSpace 
+
+]
+
+{ #category : 'examples' }
+BROutExample class >> sampleLEDTextWithScore [
+
+	<sampleInstance>
+	^ BROutLEDText new textPadding:5; label: '2345'; openInNewSpace 
+
+]
+
+{ #category : 'examples' }
 BROutExample class >> sampleStandaloneButton [
 
 	<sampleInstance>

@@ -6,8 +6,9 @@ BlBrickElement new openInNewSpace
 Class {
 	#name : 'BlBrickElement',
 	#superclass : 'BlElement',
-	#category : 'BlBreakOut',
-	#package : 'BlBreakOut'
+	#category : 'BlBreakOut-Core',
+	#package : 'BlBreakOut',
+	#tag : 'Core'
 }
 
 { #category : 'as yet unclassified' }

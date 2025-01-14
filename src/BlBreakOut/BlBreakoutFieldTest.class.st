@@ -1,8 +1,9 @@
 Class {
 	#name : 'BlBreakoutFieldTest',
 	#superclass : 'TestCase',
-	#category : 'BlBreakOut',
-	#package : 'BlBreakOut'
+	#category : 'BlBreakOut-Core',
+	#package : 'BlBreakOut',
+	#tag : 'Core'
 }
 
 { #category : 'as yet unclassified' }

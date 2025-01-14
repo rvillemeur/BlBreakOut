@@ -4,8 +4,9 @@ Class {
 	#instVars : [
 		'resistanceNumber'
 	],
-	#category : 'BlBreakOut',
-	#package : 'BlBreakOut'
+	#category : 'BlBreakOut-Core',
+	#package : 'BlBreakOut',
+	#tag : 'Core'
 }
 
 { #category : 'as yet unclassified' }

@@ -5,8 +5,9 @@ Class {
 		'duration',
 		'timeLeft'
 	],
-	#category : 'BlBreakOut',
-	#package : 'BlBreakOut'
+	#category : 'BlBreakOut-Core',
+	#package : 'BlBreakOut',
+	#tag : 'Core'
 }
 
 { #category : 'accessing' }

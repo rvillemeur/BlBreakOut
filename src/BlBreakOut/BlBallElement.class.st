@@ -13,8 +13,9 @@ Class {
 		'direction',
 		'animation'
 	],
-	#category : 'BlBreakOut',
-	#package : 'BlBreakOut'
+	#category : 'BlBreakOut-Core',
+	#package : 'BlBreakOut',
+	#tag : 'Core'
 }
 
 { #category : 'animation' }

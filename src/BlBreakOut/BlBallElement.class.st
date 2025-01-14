@@ -21,6 +21,15 @@ Class {
 { #category : 'animation' }
 BlBallElement >> animation [
 
+"	process := [
+	           [ true ] whileTrue: [
+		           self position:
+			           Smalltalk currentWorld activeHand position
+			           + self mouseOffset.
+		           (1 / 60) seconds asDelay wait ] ] forkAt:
+		           Processor lowestPriority.
+		
+		process terminate. to finish it"
 	| anim |
 	anim := BlAnimation new
 		             beInfinite;

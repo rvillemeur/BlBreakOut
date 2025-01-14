@@ -1,9 +1,9 @@
 Class {
 	#name : 'BROutLEDTest',
 	#superclass : 'TestCase',
-	#category : 'BlBreakOut-Test',
+	#category : 'BlBreakOut-Tests',
 	#package : 'BlBreakOut',
-	#tag : 'Test'
+	#tag : 'Tests'
 }
 
 { #category : 'tests' }

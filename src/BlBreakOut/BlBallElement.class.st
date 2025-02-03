@@ -20,8 +20,7 @@ Class {
 
 { #category : 'animation' }
 BlBallElement >> animation [
-
-"	process := [
+	"	process := [
 	           [ true ] whileTrue: [
 		           self position:
 			           Smalltalk currentWorld activeHand position
@@ -30,16 +29,13 @@ BlBallElement >> animation [
 		           Processor lowestPriority.
 		
 		process terminate. to finish it"
-	| anim |
-	anim := BlAnimation new
-		             beInfinite;
-		             duration: 50 milliSeconds.
 
-	anim addEventHandler: (BlEventHandler
-			 on: BlAnimationLoopDoneEvent
-			 do: [ :anEvent | parent moveBall ]).
-
-	^ anim
+	^ BlAnimation new
+		  beInfinite;
+		  duration: 50 milliSeconds;
+		  addEventHandler: (BlEventHandler
+				   on: BlAnimationLoopDoneEvent
+				   do: [ :anEvent | parent moveBall ])
 ]
 
 { #category : 'positioning' }

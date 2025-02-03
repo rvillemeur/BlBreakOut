@@ -1,4 +1,6 @@
 "
+`AeFontManager globalInstance scanDirectory: 'C:\devzone\BlBreakOut\assets\font' asFileReference.`
+
 you can load a directory with fonts (e.g. .ttf and .otf files) this way: 
 `AeFontManager globalInstance scanDirectory: '../../fonts' asFileReference`
 

@@ -21,6 +21,7 @@ BROutButton >> action: anObject [
 
 { #category : 'initialization' }
 BROutButton >> initialize [
+
 	super initialize.
 	self
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 8);
@@ -36,14 +37,15 @@ BROutButton >> initialize [
 				 offset: 0 @ 0
 				 width: 4).
 	label := BlTextElement new.
-	label text: 'label' asRopedText.
+	label text: ('label' asRopedText
+			 fontSize: 50;
+			 yourself).
+
 	label constraintsDo: [ :c |
 		c frame horizontal alignCenter.
 		c frame vertical alignCenter ].
 	self addChild: label.
-	self
-		addEventHandlerOn: BlClickEvent 
-		do: [ action value].
+	self addEventHandlerOn: BlClickEvent do: [ action value ]
 ]
 
 { #category : 'accessing' }
@@ -55,5 +57,7 @@ BROutButton >> label [
 { #category : 'accessing' }
 BROutButton >> label: aText [
 
-		label text: aText asRopedText.
+	label text: (aText asRopedText
+			 fontSize: 50;
+			 yourself)
 ]

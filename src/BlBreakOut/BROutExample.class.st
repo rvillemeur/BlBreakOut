@@ -28,7 +28,7 @@ BROutExample class >> newGame [
 	board 
 	addChild: field;
 	addChild: score.
-	^board  .
+	^board  openInNewSpace.
 ]
 
 { #category : 'examples' }

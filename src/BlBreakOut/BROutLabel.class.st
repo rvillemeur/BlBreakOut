@@ -22,13 +22,13 @@ BROutLabel >> initialize [
 			c vertical matchParent ].
 
 	label := BlTextElement new.
-	label text: ('label' asRopedText
-			 fontSize: 50;
-			 yourself).
+	label text: 'label' asRopedText.
 
 	label constraintsDo: [ :c |
 		c frame horizontal alignCenter.
-		c frame vertical alignCenter ].
+		c frame vertical alignCenter.
+		"c horizontal matchParent.
+			c vertical matchParent"].
 	self addChild: label.
 ]
 
@@ -41,7 +41,5 @@ BROutLabel >> label [
 { #category : 'accessing' }
 BROutLabel >> label: anObject [
 
-	label text: (anObject asRopedText
-			 fontSize: 50;
-			 yourself)
+	label text: anObject asRopedText
 ]

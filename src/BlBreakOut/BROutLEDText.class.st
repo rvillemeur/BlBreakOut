@@ -66,7 +66,6 @@ when I set the Digital-7 mono family name and set the medium weight, then by def
 	label text: ('1234567890' asRopedText
 			 fontName: 'Digital-7 Mono';
 			 foreground: Color green;
-			 fontSize: 50;
 			 yourself).
 	label constraintsDo: [ :c |
 		c frame horizontal alignCenter.
@@ -89,7 +88,6 @@ BROutLEDText >> label: aText [
 	label text: ((mask last: textPadding ) asRopedText
 			 fontName: 'Digital-7 Mono';
 			 foreground: Color green;
-			 fontSize: 50;
 			 yourself).
 ]
 

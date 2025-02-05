@@ -36,14 +36,13 @@ BROutButton >> initialize [
 				 color: (Color gray alpha: 1.0)
 				 offset: 0 @ 0
 				 width: 4).
+	
 	label := BlTextElement new.
-	label text: ('label' asRopedText
-			 fontSize: 50;
-			 yourself).
-
+	label text: 'label' asRopedText.
 	label constraintsDo: [ :c |
 		c frame horizontal alignCenter.
 		c frame vertical alignCenter ].
+	
 	self addChild: label.
 	self addEventHandlerOn: BlClickEvent do: [ action value ]
 ]
@@ -57,7 +56,5 @@ BROutButton >> label [
 { #category : 'accessing' }
 BROutButton >> label: aText [
 
-	label text: (aText asRopedText
-			 fontSize: 50;
-			 yourself)
+	label text: aText asRopedText
 ]

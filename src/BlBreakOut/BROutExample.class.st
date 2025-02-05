@@ -18,33 +18,41 @@ BROutExample class >> newGame [
 
 	<sampleInstance>
 	|board field score|
-	board := BlElement new 
-	layout: BlFlowLayout vertical; constraintsDo: [ :c | c horizontal fitContent. c vertical matchParent ].
 	field := BlBreakoutField new.
-	score := self scoreBar transformDo: [ :t | t scaleBy: 40 percent; translateBy: -430@(-15)].
+	board := BlElement new 
+	layout: BlFlowLayout vertical; constraintsDo: [ :c | c horizontal exact: 568 . c vertical fitContent ].
+	
+	score := self scoreBar.
 	
 	board 
 	addChild: field;
 	addChild: score.
-	^board.
+	^board  .
 ]
 
 { #category : 'examples' }
 BROutExample class >> sampleButton [
 
 	<sampleInstance>
-	^ BROutButton new
+	^BlElement new 		constraintsDo: [ :c |
+			c horizontal exact: 150.
+			c vertical exact: 50 ]; 
+			background: (Color blue alpha: 0.2); addChild: (BROutButton new
 		  label: 'Button Label Example';
-		  action: [ self inform: 'clicked' ];
-		  openInNewSpace
+		  action: [ self inform: 'clicked' ])";
+		  openInNewSpace"
 ]
 
 { #category : 'examples' }
 BROutExample class >> sampleLEDText [
 
 	<sampleInstance>
-	^ BROutLEDText new openInNewSpace 
-
+	^ BlElement new
+		  constraintsDo: [ :c |
+			  c horizontal exact: 150.
+			  c vertical exact: 50 ];
+		  background: (Color blue alpha: 0.2);
+		  addChild: BROutLEDText new
 ]
 
 { #category : 'examples' }
@@ -70,7 +78,7 @@ BROutExample class >> scoreBar [
 	^ BlElement new
 	background: (Color red alpha: 0.2);
 	border: (BlBorder paint: Color darkGray width: 4);
-	layout: BlFlowLayout horizontal; constraintsDo: [ :c | c horizontal fitContent. c vertical exact: 80 ];
+	layout: BlFlowLayout horizontal; constraintsDo: [ :c | c horizontal matchParent. c vertical exact: 50 ];
 	addChild: (BROutLabel new label: 'Lifes';  margin: (BlInsets all: 10) );
 	addChild: (BROutLEDText new textPadding: 5; label: '00'; margin: (BlInsets all: 10));
 	addChild: (BROutLabel new label: 'Scores';  margin: (BlInsets all: 10) );

@@ -13,6 +13,22 @@ BROutExample class >> newFieldGame [
 	^ BlBreakoutField new openInNewSpace
 ]
 
+{ #category : 'instance creation' }
+BROutExample class >> newGame [
+
+	<sampleInstance>
+	|board field score|
+	board := BlElement new 
+	layout: BlFlowLayout vertical; constraintsDo: [ :c | c horizontal fitContent. c vertical matchParent ].
+	field := BlBreakoutField new.
+	score := self scoreBar transformDo: [ :t | t scaleBy: 40 percent; translateBy: -430@(-15)].
+	
+	board 
+	addChild: field;
+	addChild: score.
+	^board.
+]
+
 { #category : 'examples' }
 BROutExample class >> sampleButton [
 
@@ -54,10 +70,10 @@ BROutExample class >> scoreBar [
 	^ BlElement new
 	background: (Color red alpha: 0.2);
 	border: (BlBorder paint: Color darkGray width: 4);
-	layout: BlFlowLayout horizontal; constraintsDo: [ :c | c horizontal fitContent. c vertical fitContent ];
-	addChild: (BlTextElement text: ('Lifes' asRopedText fontSize: 50; yourself)); padding: (BlInsets all: 10);
+	layout: BlFlowLayout horizontal; constraintsDo: [ :c | c horizontal fitContent. c vertical exact: 80 ];
+	addChild: (BROutLabel new label: 'Lifes';  margin: (BlInsets all: 10) );
 	addChild: (BROutLEDText new textPadding: 5; label: '00'; margin: (BlInsets all: 10));
-	addChild: (BlTextElement text: ('Scores' asRopedText fontSize: 50; yourself));
+	addChild: (BROutLabel new label: 'Scores';  margin: (BlInsets all: 10) );
 	addChild: (BROutLEDText new textPadding: 5; label: '000000';  margin: (BlInsets all: 10)); 
 	addChild: (BROutButton new label: 'Active game'; action: [ self inform: 'clicked' ]; margin: (BlInsets all: 10)); 
 	addChild: (BROutButton new label: 'Pause'; action: [ self inform: 'clicked' ]; margin: (BlInsets all: 10)); 

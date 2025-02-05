@@ -1,41 +1,26 @@
-"
-A very simple button, used for BreakOut game
-"
 Class {
-	#name : 'BROutButton',
+	#name : 'BROutLabel',
 	#superclass : 'BlElement',
 	#instVars : [
-		'label',
-		'action'
+		'label'
 	],
 	#category : 'BlBreakOut-Helper',
 	#package : 'BlBreakOut',
 	#tag : 'Helper'
 }
 
-{ #category : 'accessing' }
-BROutButton >> action: anObject [
-
-	action := anObject
-]
-
 { #category : 'initialization' }
-BROutButton >> initialize [
+BROutLabel >> initialize [
 
 	super initialize.
 	self
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 8);
-		background: (Color red alpha: 0.2);
-		border: (BlBorder paint: Color darkGray width: 4);
 		layout: BlFrameLayout new;
 		padding: (BlInsets all: 10);
 		constraintsDo: [ :c |
 			c horizontal fitContent.
-			c vertical matchParent ];
-		effect: (BlGaussianShadowEffect
-				 color: (Color gray alpha: 1.0)
-				 offset: 0 @ 0
-				 width: 4).
+			c vertical matchParent ].
+
 	label := BlTextElement new.
 	label text: ('label' asRopedText
 			 fontSize: 50;
@@ -45,19 +30,18 @@ BROutButton >> initialize [
 		c frame horizontal alignCenter.
 		c frame vertical alignCenter ].
 	self addChild: label.
-	self addEventHandlerOn: BlClickEvent do: [ action value ]
 ]
 
 { #category : 'accessing' }
-BROutButton >> label [
+BROutLabel >> label [
 
 	^ label
 ]
 
 { #category : 'accessing' }
-BROutButton >> label: aText [
+BROutLabel >> label: anObject [
 
-	label text: (aText asRopedText
+	label text: (anObject asRopedText
 			 fontSize: 50;
 			 yourself)
 ]

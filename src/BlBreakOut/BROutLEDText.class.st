@@ -57,7 +57,7 @@ when I set the Digital-7 mono family name and set the medium weight, then by def
 		padding: (BlInsets all: 10);
 		constraintsDo: [ :c |
 			c horizontal fitContent.
-			c vertical fitContent ];
+			c vertical matchParent ];
 		effect: (BlGaussianShadowEffect
 				 color: (Color gray alpha: 1.0)
 				 offset: 0 @ 0

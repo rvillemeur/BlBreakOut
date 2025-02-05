@@ -9,5 +9,10 @@ Class {
 BaselineOfBlBreakOut >> baseline: spec [
 
 	<baseline>
-	spec for: #common do: [ spec package: 'BlBreakOut' ]
+	spec for: #common do: [
+		spec package: 'BlBreakOut' with: [ spec requires: #( 'Bloc' ) ].
+
+		spec
+			baseline: 'Bloc'
+			with: [ spec repository: 'github://pharo-graphics/Bloc:dev/src' ] ]
 ]

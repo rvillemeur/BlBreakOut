@@ -76,18 +76,21 @@ BROutExample class >> sampleStandaloneButton [
 BROutExample class >> scoreBar [
 
 	<sampleInstance>
+	|insets|
+	insets := (BlInsets top: 10 left: 5 bottom: 10 right: 5).
+	
 	^ BlElement new
 	background: (Color red alpha: 0.2);
 	border: (BlBorder paint: Color darkGray width: 4);
 	layout: BlFlowLayout horizontal; constraintsDo: [ :c | c horizontal matchParent. c vertical exact: 50 ];
-	addChild: (BROutLabel new label: 'Lifes';  margin: (BlInsets all: 5) );
-	addChild: (BROutLEDText new textPadding: 2; label: '00'; margin: (BlInsets all: 5));
-	addChild: (BROutLabel new label: 'Scores';  margin: (BlInsets all: 5) );
-	addChild: (BROutLEDText new textPadding: 5; label: '000000';  margin: (BlInsets all: 5)); 
-	addChild: (BROutButton new label: 'Active game'; action: [ self inform: 'clicked' ]; margin: (BlInsets all: 5)); 
-	addChild: (BROutButton new label: 'Pause'; action: [ self inform: 'clicked' ]; margin: (BlInsets all: 5)); 
-	addChild: (BROutButton new label: 'New Game'; action: [ self inform: 'clicked' ]; margin: (BlInsets all: 5)); 
-	addChild: (BROutButton new label: 'Quit'; action: [ self inform: 'clicked' ]; margin: (BlInsets all: 5))
+	addChild: (BROutLabel new label: 'Lifes';  margin: insets);
+	addChild: (BROutLEDText new textPadding: 2; label: '00'; margin: insets);
+	addChild: (BROutLabel new label: 'Scores';  margin: insets);
+	addChild: (BROutLEDText new textPadding: 5; label: '000000';  margin:insets); 
+	addChild: (BROutButton new label: 'Active game'; action: [ self inform: 'clicked' ]; margin: insets); 
+	addChild: (BROutButton new label: 'Pause'; action: [ self inform: 'clicked' ]; margin: insets); 
+	addChild: (BROutButton new label: 'New Game'; action: [ self inform: 'clicked' ]; margin: insets); 
+	addChild: (BROutButton new label: 'Quit'; action: [ self inform: 'clicked' ]; margin: insets)
 ]
 
 { #category : 'see class side' }

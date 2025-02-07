@@ -60,8 +60,8 @@ BlBatterElement >> touchedBy: aBall [
 
 { #category : 'moves' }
 BlBatterElement >> xToMoveLeft [
-^ speed min: (self position x - 0)
 
+	^ speed min: self position x - 0
 ]
 
 { #category : 'moves' }

@@ -81,19 +81,15 @@ BlBallElement >> initialize [
 ]
 
 { #category : 'testing' }
-BlBallElement >> isNextPosition: arg1 above: arg2 [
+BlBallElement >> isNextPosition: aPoint above: aRectangle [
 
-	| tmp1 |
-	tmp1 := arg1 y.
-	^ tmp1 - 4 < arg2 top
+	^ aPoint y - 4 < aRectangle top
 ]
 
 { #category : 'testing' }
-BlBallElement >> isNextPosition: arg1 below: arg2 [
+BlBallElement >> isNextPosition: aPoint below: aRectangle [
 
-	| tmp1 |
-	tmp1 := arg1 y.
-	^ tmp1 + 4 >= arg2 bottom
+	^ aPoint y + 4 >= aRectangle bottom
 ]
 
 { #category : 'testing' }
@@ -123,11 +119,11 @@ BlBallElement >> nextPosition [
 { #category : 'initialization' }
 BlBallElement >> positionAtStart [
 
-	| tmp1 tmp2 tmp3 |
-	tmp1 := parent extent.
-	tmp2 := tmp1 x / 2.
-	tmp3 := tmp1 y - 15.
-	self position: tmp2 - 15 @ tmp3 - 6
+	| extent x y |
+	extent := parent extent.
+	x := extent x / 2.
+	y := extent y - 15.
+	self position: x - 15 @ y - 6
 ]
 
 { #category : 'animation' }

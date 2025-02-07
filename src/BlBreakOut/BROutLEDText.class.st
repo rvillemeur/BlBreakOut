@@ -1,33 +1,8 @@
 "
-`AeFontManager globalInstance scanDirectory: 'C:\devzone\BlBreakOut\assets\font' asFileReference.`
+Very simple LED widget using Digital7_mono font. The font has been loaded in the image.
 
-you can load a directory with fonts (e.g. .ttf and .otf files) this way: 
-`AeFontManager globalInstance scanDirectory: '../../fonts' asFileReference`
+You can specify how many digit you want to display with `textPadding`.
 
-There is also 
-`AeFontManager globalInstance scanDefaultDirectories`
-which takes a second to find font files in the typical font directories in current platform (OS)
-
-For example, say you have a font called ""Minecraft"" in a relative directory. 
-This font has only ""Medium"" type (this is important, too):
-
-```smalltalk 
-AeFontManager globalInstance scanDirectory: '../../fonts' asFileReference.
-
-BlTextElement new
-    text: ('Hola, Bonjour, Hello!' asRopedText
-            fontName: 'Minecraft' ""<--- family name"";
-            medium; ""<--- weight""
-            fontSize: 50;
-            yourself);
-    openInNewSpace.
-```
-
-Reset font after image restart:
-```smalltalk
-AeFontManager resetGlobalInstance.
-AeFontManager globalInstance scanDirectory: AeFilesystemResources fontsDirectory
-```
 "
 Class {
 	#name : 'BROutLEDText',

@@ -1,3 +1,6 @@
+"
+Very simple label, created to help position text in the score bar of the game.
+"
 Class {
 	#name : 'BROutLabel',
 	#superclass : 'BlElement',

@@ -1,3 +1,8 @@
+"
+Digital7 mono font file, embedded directly in the image, for 2 reasons:
+- it avoid the bug of the image forgetting all the font except Consolas sans-mono
+- its size is acceptable (37k), it doesn't introduce too much overhead.
+"
 Class {
 	#name : 'Digital7_Mono',
 	#superclass : 'AeEmbeddedFontFile',
@@ -1585,4 +1590,30 @@ Digital7_Mono class >> fontContentsData [
 { #category : 'accessing' }
 Digital7_Mono class >> originalFileName [
 	^ 'Digital7Mono-Yz9J4.ttf'
+]
+
+{ #category : 'examples' }
+Digital7_Mono class >> sampleGlyphGrid [
+
+	<sampleInstance>
+	| container |
+	container := BlElement new
+		             border: (BlBorder paint: Color red width: 1);
+		             background: Color black;
+		             layout: BlFlowLayout horizontal;
+		             constraintsDo: [ :c |
+			             c horizontal matchParent.
+			             c vertical fitContent ].
+
+	32 to: 126 do: [ :i |
+		| elt |
+		elt := (BlTextElement text: ((Unicode value: i) asRopedText
+					         fontSize: 25;
+					         fontName: 'Digital-7 Mono';
+					foreground: Color green))
+			       padding: (BlInsets all: 5);
+			       border: (BlBorder paint: Color red width: 1).
+
+		container addChild: elt ].
+	^ container
 ]

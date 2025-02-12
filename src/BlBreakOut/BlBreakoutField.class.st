@@ -203,7 +203,8 @@ BlBreakoutField >> ifBallNotBouncedOnWall: aPoint [
 { #category : 'scoring' }
 BlBreakoutField >> increaseScoreBy: aNumber [
 
-	score := score + aNumber
+	score := score + aNumber.
+	self dispatchEvent: ScoreChanged new.
 ]
 
 { #category : 'initialization' }
@@ -259,6 +260,7 @@ BlBreakoutField >> initializeGame [
 	score := 0.
 	lifes := 4.
 	level := 1.
+	self dispatchEvent: LifeChanged new.
 	self installCurrentLevel.
 	self pauseGame
 ]
@@ -347,6 +349,12 @@ BlBreakoutField >> isPaused [
 	^ paused
 ]
 
+{ #category : 'accessing' }
+BlBreakoutField >> lifes [
+
+	^ lifes
+]
+
 { #category : 'game logic' }
 BlBreakoutField >> lostABall [
 	lifes isZero ifTrue: [
@@ -354,6 +362,7 @@ BlBreakoutField >> lostABall [
 		self pauseGame.
 		^ self ].
 	lifes := lifes - 1.
+	self dispatchEvent: LifeChanged new.
 	self pauseGame.
 	self resetBallAndBatterPositionAtStart.
 	
@@ -373,6 +382,15 @@ BlBreakoutField >> moveBall [
 	self isLevelTerminated ifTrue: [ self installNextLevel ].
 
 	ball moveToNextPosition
+]
+
+{ #category : 'game logic' }
+BlBreakoutField >> newGame [
+
+	self setBallAndBatterPositionAtStart.
+	self initializeBricks.
+	self installLevel: self class level0.
+	self initializeGame
 ]
 
 { #category : 'game logic' }
@@ -427,6 +445,12 @@ BlBreakoutField >> restartPausedGame [
 
 	paused := false.
 	ball startAnimation
+]
+
+{ #category : 'accessing' }
+BlBreakoutField >> score [
+
+	^ score
 ]
 
 { #category : 'initialization' }

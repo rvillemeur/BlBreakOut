@@ -93,6 +93,12 @@ BROutExample class >> scoreBar [
 	addChild: (BROutButton new label: 'Quit'; action: [ self inform: 'clicked' ]; margin: insets)
 ]
 
+{ #category : 'instance creation' }
+BROutExample >> newGame [ 
+
+	<script: 'BlBreakOut new openInNewSpace'>
+]
+
 { #category : 'see class side' }
 BROutExample >> seeClassSide [ 
 ]

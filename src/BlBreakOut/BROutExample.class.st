@@ -17,18 +17,7 @@ BROutExample class >> newFieldGame [
 BROutExample class >> newGame [
 
 	<sampleInstance>
-	|board field score|
-	field := BlBreakoutField new.
-
-	board := BlElement new
-	layout: BlFlowLayout vertical; constraintsDo: [ :c | c horizontal exact: 568 . c vertical fitContent ].
-	
-	score := self scoreBar.
-	
-	board 
-	addChild: field;
-	addChild: score.
-	^board  openInNewSpace.
+	^ BlBreakOut new openInNewSpace
 ]
 
 { #category : 'examples' }

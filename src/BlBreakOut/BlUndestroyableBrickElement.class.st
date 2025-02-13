@@ -19,7 +19,7 @@ BlUndestroyableBrickElement class >> isDestroyable [
 ]
 
 { #category : 'as yet unclassified' }
-BlUndestroyableBrickElement >> actionWhenBumped [
+BlUndestroyableBrickElement >> actionWhenBumpedBy: aBall [
 "we do nothing - original tutorial include sounds, not this version"
 "(SampledSound soundNamed: ’clink’) play"
 ]

@@ -188,15 +188,15 @@ BlBreakoutField >> ifBallNotBouncedOnWall: aPoint [
 	(ball isNextPosition: aPoint verticallyInside: fieldBounds) ifTrue: [
 		ball bounceLeftRight.
 		^ false ].
-	nil.
+
 	aPoint y > (batter position y + batter height) ifTrue: [
 		self lostABall.
 		^ false ].
-	nil.
+
 	(ball isNextPosition: aPoint above: fieldBounds) ifTrue: [
 		ball bounceTopBottom.
 		^ false ].
-	nil.
+
 	^ true
 ]
 

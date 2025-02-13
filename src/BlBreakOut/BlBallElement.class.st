@@ -20,22 +20,11 @@ Class {
 
 { #category : 'animation' }
 BlBallElement >> animation [
-	"	process := [
-	           [ true ] whileTrue: [
-		           self position:
-			           Smalltalk currentWorld activeHand position
-			           + self mouseOffset.
-		           (1 / 60) seconds asDelay wait ] ] forkAt:
-		           Processor lowestPriority.
-		
-		process terminate. to finish it"
 
-	^ BlAnimation new
-		  beInfinite;
-		  duration: 50 milliSeconds;
-		  addEventHandler: (BlEventHandler
-				   on: BlAnimationLoopDoneEvent
-				   do: [ :anEvent | parent moveBall ])
+	^ [
+	  [ true ] whileTrue: [
+		  parent moveBall.
+		  (1 / 50) seconds asDelay wait ] ] forkAt: Processor lowestPriority
 ]
 
 { #category : 'positioning' }
@@ -78,6 +67,8 @@ BlBallElement >> initialize [
 	speed := 3.
 	direction :=  -1 @  -1.
 	animation := self animation.
+	"self addAnimation: animation."
+	"animation stop."
 ]
 
 { #category : 'testing' }
@@ -128,12 +119,13 @@ BlBallElement >> positionAtStart [
 
 { #category : 'animation' }
 BlBallElement >> startAnimation [
+
 	animation := self animation.
-	self addAnimation: animation
+
 ]
 
 { #category : 'animation' }
 BlBallElement >> stopAnimation [
 
-	animation stop
+	animation terminate
 ]

@@ -358,15 +358,15 @@ BlBreakoutField >> lifes [
 
 { #category : 'game logic' }
 BlBreakoutField >> lostABall [
+
 	lifes isZero ifTrue: [
 		self inform: 'You die'.
 		self pauseGame.
 		^ self ].
 	lifes := lifes - 1.
 	self dispatchEvent: LifeChanged new.
-	self pauseGame.
 	self resetBallAndBatterPositionAtStart.
-	
+	self pauseGame
 ]
 
 { #category : 'game logic' }

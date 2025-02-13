@@ -402,7 +402,7 @@ BlBreakoutField >> moveBall [
 { #category : 'game logic' }
 BlBreakoutField >> newGame [
 
-	self setBallAndBatterPositionAtStart.
+	self resetBallAndBatterPositionAtStart .
 	self initializeBricks.
 	self installLevel: self class level0.
 	self initializeGame

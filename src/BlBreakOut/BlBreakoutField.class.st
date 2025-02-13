@@ -18,6 +18,8 @@ Class {
 		'lifes',
 		'level',
 		'levels',
+		'moveLeftShortcut',
+		'moveRightShortcut',
 		'destroyableBrickNumber'
 	],
 	#category : 'BlBreakOut-Core',
@@ -268,20 +270,19 @@ BlBreakoutField >> initializeGame [
 { #category : 'initialization' }
 BlBreakoutField >> initializeKeyboardShortcuts [
 
-	self addShortcut: (BlShortcutWithAction new
-			 combination: BlKeyCombination builder n build;
-			 action: [ :anEvent :aShortcut | batter moveLeft ]).
-	self addShortcut: (BlShortcutWithAction new
-			 combination: BlKeyCombination builder m build;
-			 action: [ :anEvent :aShortcut | batter moveRight ]).
+	moveLeftShortcut := BlShortcutWithAction new
+		                    combination: BlKeyCombination builder n build;
+		                    action: [ :anEvent :aShortcut | batter moveLeft ].
+	moveRightShortcut := BlShortcutWithAction new
+		                     combination: BlKeyCombination builder m build;
+		                     action: [ :anEvent :aShortcut |
+			                     batter moveRight ].
+
 	self addShortcut: (BlShortcutWithAction new
 			 combination: BlKeyCombination builder space build;
 			 action: [ :anEvent :aShortcut |
-				"don't forget this, otherwise, you may end adding multiple animation to your ball."
-				anEvent consumed: true.
-				 self isPaused
-					 ifTrue: [ anEvent currentTarget restartPausedGame ]
-					 ifFalse: [ anEvent currentTarget pauseGame ] ]).
+				 anEvent consumed: true.
+				 self managePauseGame: anEvent ]).
 
 	"necessary, otherwise, keyboard shortcut are not taken into account"
 	self requestFocus
@@ -366,6 +367,20 @@ BlBreakoutField >> lostABall [
 	self pauseGame.
 	self resetBallAndBatterPositionAtStart.
 	
+]
+
+{ #category : 'game logic' }
+BlBreakoutField >> managePauseGame: anEvent [
+
+	self isPaused
+		ifTrue: [
+			self addShortcut: moveLeftShortcut.
+			self addShortcut: moveRightShortcut.
+			anEvent currentTarget restartPausedGame ]
+		ifFalse: [
+			self removeShortcut: moveLeftShortcut.
+			self removeShortcut: moveRightShortcut.
+			anEvent currentTarget pauseGame ]
 ]
 
 { #category : 'positioning' }

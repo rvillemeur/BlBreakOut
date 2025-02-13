@@ -24,7 +24,7 @@ BlBallElement >> animation [
 	^ [
 	  [ true ] whileTrue: [
 		  parent moveBall.
-		  (1 / 50) seconds asDelay wait ] ] forkAt: Processor lowestPriority
+		  (1 / 40) seconds asDelay wait ] ] forkAt: Processor lowestPriority
 ]
 
 { #category : 'positioning' }
@@ -67,8 +67,6 @@ BlBallElement >> initialize [
 	speed := 3.
 	direction :=  -1 @  -1.
 	animation := self animation.
-	"self addAnimation: animation."
-	"animation stop."
 ]
 
 { #category : 'testing' }

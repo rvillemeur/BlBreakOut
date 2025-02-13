@@ -43,18 +43,20 @@ BlBatterElement >> positionAtStart [
 	self position: (center @ bottom - self extent y - 5)
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'moves' }
 BlBatterElement >> touchedBy: aBall [
 
 	| d y x directionSign center |
 	center := self position x + (self width / 2).
-	self flag: #TODO. "TODO - this formula need to be reviewed, the ball behaviour is somehow inconsistent. It always move in the same direction "
 	d := (center - aBall position x) abs * 2 / self width.
 	y := (d squared / 2 + 2) sqrt.
 	x := d.
-	directionSign := aBall direction x sign @ aBall direction y sign.
-	aBall direction: x @ y * directionSign.
+	
+	directionSign := center - aBall position x > 0
+		                 ifTrue: [ -1 @ 1 ]
+		                 ifFalse: [ 1 @ 1 ].
 
+	aBall direction: x @ y * directionSign.
 	aBall bounceTopBottom
 ]
 

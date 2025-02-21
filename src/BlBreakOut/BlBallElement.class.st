@@ -24,6 +24,7 @@ BlBallElement >> animation [
 	^ [
 	  [ true ] whileTrue: [
 		  parent moveBall.
+			parent stepBonuses.
 		  (1 / 40) seconds asDelay wait ] ] forkAt: Processor lowestPriority
 ]
 

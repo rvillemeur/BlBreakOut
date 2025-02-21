@@ -6,6 +6,9 @@ BlBrickElement new openInNewSpace
 Class {
 	#name : 'BlBrickElement',
 	#superclass : 'BlElement',
+	#instVars : [
+		'bonus'
+	],
 	#category : 'BlBreakOut-Core',
 	#package : 'BlBreakOut',
 	#tag : 'Core'
@@ -38,10 +41,28 @@ BlBrickElement >> actionWhenBumpedBy: aBall [
 	self parent removeChild: self.
 ]
 
+{ #category : 'accessing' }
+BlBrickElement >> bonus [
+
+	^ bonus
+]
+
+{ #category : 'accessing' }
+BlBrickElement >> bonus: aBonus [
+
+	bonus := aBonus
+]
+
 { #category : 'initialization' }
 BlBrickElement >> brickSize [
 
 	^ self class defaultBrickSize
+]
+
+{ #category : 'testing' }
+BlBrickElement >> hasBonus [
+
+	^ bonus isNil not
 ]
 
 { #category : 'initialization' }

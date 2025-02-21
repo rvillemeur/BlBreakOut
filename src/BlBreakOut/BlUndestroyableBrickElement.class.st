@@ -1,3 +1,6 @@
+"
+Special kind of brick that cannot be destroyed
+"
 Class {
 	#name : 'BlUndestroyableBrickElement',
 	#superclass : 'BlBrickElement',
@@ -22,6 +25,9 @@ BlUndestroyableBrickElement class >> isDestroyable [
 BlUndestroyableBrickElement >> actionWhenBumpedBy: aBall [
 "we do nothing - original tutorial include sounds, not this version"
 "(SampledSound soundNamed: ’clink’) play"
+
+	aBall bounceTopBottom.
+	self parent increaseScoreBy: 10.
 ]
 
 { #category : 'initialization' }

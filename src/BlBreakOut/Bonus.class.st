@@ -1,3 +1,6 @@
+"
+Base class to add bonuses to the game
+"
 Class {
 	#name : 'Bonus',
 	#superclass : 'Object',
@@ -9,6 +12,12 @@ Class {
 	#package : 'BlBreakOut',
 	#tag : 'Core'
 }
+
+{ #category : 'computation' }
+Bonus class >> percentage [
+
+	^ 0.2
+]
 
 { #category : 'accessing' }
 Bonus >> end: aField [

@@ -1,3 +1,6 @@
+"
+Event raised when the number of life is updated
+"
 Class {
 	#name : 'LifeChanged',
 	#superclass : 'BlEvent',

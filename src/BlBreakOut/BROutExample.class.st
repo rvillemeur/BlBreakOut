@@ -1,3 +1,6 @@
+"
+collection of method used to test game and widget during development
+"
 Class {
 	#name : 'BROutExample',
 	#superclass : 'BlElement',

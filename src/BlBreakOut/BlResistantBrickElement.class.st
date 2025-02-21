@@ -1,3 +1,6 @@
+"
+Special kind of brick that need to be hit `resistanceNumber` to be destroyed
+"
 Class {
 	#name : 'BlResistantBrickElement',
 	#superclass : 'BlBrickElement',

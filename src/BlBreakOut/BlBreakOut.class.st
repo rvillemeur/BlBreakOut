@@ -1,3 +1,7 @@
+"
+Entry point for BreakOut game.
+`BlBreakOut new openInNewSpace`
+"
 Class {
 	#name : 'BlBreakOut',
 	#superclass : 'BlElement',
@@ -76,14 +80,14 @@ BlBreakOut >> initializeField [
 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'update' }
 BlBreakOut >> updateLifes [
 	"change the value represented by the ledMorph"
 
 	lifeDisplay label: field lifes asRopedText
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'update' }
 BlBreakOut >> updateScore [
 	"change the value represented by the ledMorph"
 

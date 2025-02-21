@@ -20,7 +20,8 @@ Class {
 		'levels',
 		'moveLeftShortcut',
 		'moveRightShortcut',
-		'destroyableBrickNumber'
+		'destroyableBrickNumber',
+		'activeBonuses'
 	],
 	#category : 'BlBreakOut-Core',
 	#package : 'BlBreakOut',
@@ -122,6 +123,13 @@ BlBreakoutField class >> playFieldSize [
 	^ 8 @ 26
 ]
 
+{ #category : 'adding' }
+BlBreakoutField >> addActiveBonus: aBonus [
+
+	activeBonuses add: aBonus.
+	aBonus start: self
+]
+
 { #category : 'bricks' }
 BlBreakoutField >> addBrick: aBrickElement [
 
@@ -137,11 +145,23 @@ BlBreakoutField >> ball: aBallElement [
 ]
 
 { #category : 'accessing' }
+BlBreakoutField >> batter [
+
+	^ batter
+]
+
+{ #category : 'accessing' }
 BlBreakoutField >> batter: aBatterElement [
 	"Add the batter as contained by the receiver"
 
 	batter := aBatterElement.
 	self addChild: aBatterElement
+]
+
+{ #category : 'scoring - bonus' }
+BlBreakoutField >> bonusTerminated: aBonus [
+
+	activeBonuses remove: aBonus
 ]
 
 { #category : 'level handling' }
@@ -182,6 +202,35 @@ BlBreakoutField >> brickLine: y ofKind: aBrickClass [
 		self addBrick: b ]
 ]
 
+{ #category : 'default' }
+BlBreakoutField >> defaultBatterSize [
+
+	50 @ 10
+]
+
+{ #category : 'bricks' }
+BlBreakoutField >> destroyableBricks [
+
+	^ bricks select: [ :each | each class isDestroyable ]
+]
+
+{ #category : 'scoring - bonus' }
+BlBreakoutField >> dispatchBonus: aBonusClass [
+
+	| destroyable bonusPercentage |
+	bonusPercentage := aBonusClass percentage.
+	destroyable := self destroyableBricks.
+	(destroyable size * bonusPercentage) rounded timesRepeat: [
+		(destroyable at: destroyable size atRandom) bonus: aBonusClass new ].
+	self revealBonuses
+]
+
+{ #category : 'scoring - bonus' }
+BlBreakoutField >> dispatchBonuses [
+
+	Bonus allSubclasses do: [ :aClass | self dispatchBonus: aClass ]
+]
+
 { #category : 'positioning' }
 BlBreakoutField >> ifBallNotBouncedOnWall: aPoint [
 
@@ -219,8 +268,15 @@ BlBreakoutField >> initialize [
 	self initializeBatterElement.
 	self setBallAndBatterPositionAtStart.
 	self initializeBricks.
+	self initializeActiveBonuses.
 	self installLevels.
 	self initializeGame
+]
+
+{ #category : 'initialization' }
+BlBreakoutField >> initializeActiveBonuses [
+
+	activeBonuses := OrderedCollection new
 ]
 
 { #category : 'initialization' }
@@ -292,10 +348,7 @@ BlBreakoutField >> initializeKeyboardShortcuts [
 BlBreakoutField >> installCurrentLevel [
 
 	self installLevel: (levels at: level).
-	destroyableBrickNumber := bricks inject: 0 into: [:sum :each |
-		                          sum + (each class isDestroyable
-			                                  ifTrue: [ 1 ]
-			                                  ifFalse: [ 0 ]) ]
+	destroyableBrickNumber := self destroyableBricks size.
 ]
 
 { #category : 'level handling' }
@@ -462,6 +515,13 @@ BlBreakoutField >> restartPausedGame [
 	ball startAnimation
 ]
 
+{ #category : 'scoring - bonus' }
+BlBreakoutField >> revealBonuses [
+
+	self destroyableBricks do: [ :each |
+		each hasBonus ifTrue: [ each color: Color green ] ]
+]
+
 { #category : 'accessing' }
 BlBreakoutField >> score [
 
@@ -474,4 +534,10 @@ BlBreakoutField >> setBallAndBatterPositionAtStart [
 
 	self addEventHandlerOn: BlElementExtentChangedEvent do: [ :evt |
 		self resetBallAndBatterPositionAtStart ]
+]
+
+{ #category : 'scoring - bonus' }
+BlBreakoutField >> stepBonuses [
+
+	activeBonuses do: [ :each | each oneStep: self ]
 ]

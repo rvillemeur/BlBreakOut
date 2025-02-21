@@ -1,3 +1,6 @@
+"
+Batter used in the playground field to move ball
+"
 Class {
 	#name : 'BlBatterElement',
 	#superclass : 'BlElement',
@@ -8,6 +11,13 @@ Class {
 	#package : 'BlBreakOut',
 	#tag : 'Core'
 }
+
+{ #category : 'sizes' }
+BlBatterElement >> enlarge [
+
+	self extent <= self parent defaultBatterSize ifTrue: [
+		self transformDo: [ :t | t scaleBy: 0.5 ] ]
+]
 
 { #category : 'initialization' }
 BlBatterElement >> initialize [
@@ -33,6 +43,12 @@ BlBatterElement >> moveRight [
 	self position: self position + (self xToMoveRight @ 0)
 ]
 
+{ #category : 'sizes' }
+BlBatterElement >> normalSize [
+
+	self size: self parent defaultBatterSize
+]
+
 { #category : 'initialization' }
 BlBatterElement >> positionAtStart [
 
@@ -41,6 +57,13 @@ BlBatterElement >> positionAtStart [
 	center := position x / 2.
 	bottom := position y.
 	self position: (center @ bottom - self extent y - 5)
+]
+
+{ #category : 'sizes' }
+BlBatterElement >> shrink [
+
+	self extent > (self parent defaultBatterSize / 2) ifTrue: [
+		self transformDo: [ :t | t scaleBy: 0.5 ] ]
 ]
 
 { #category : 'moves' }

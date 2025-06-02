@@ -15,10 +15,31 @@ BaselineOfBlBreakOut >> baseline: spec [
 		spec
 			baseline: 'Bloc'
 			with: [ spec repository: 'github://pharo-graphics/Bloc:dev/src' ] ].
-		spec postLoadDoIt: #useMorphicAsPreferedBlocHost.
+		spec postLoadDoIt: #postLoad.
 ]
 
-{ #category : 'baselines' }
+{ #category : 'operations' }
+BaselineOfBlBreakOut >> openBrowser [
+
+	(ClyFullBrowserMorph onDefaultEnvironment selectClass: BROutExample)
+		open
+]
+
+{ #category : 'operations' }
+BaselineOfBlBreakOut >> openGame [
+
+	BlBreakOut new openInNewSpace
+]
+
+{ #category : 'script' }
+BaselineOfBlBreakOut >> postLoad [
+
+	self useMorphicAsPreferedBlocHost.
+	self openBrowser.
+	self openGame
+]
+
+{ #category : 'operations' }
 BaselineOfBlBreakOut >> useMorphicAsPreferedBlocHost [
 
 	BlHost preferableHostClass: BlMorphicWindowHost

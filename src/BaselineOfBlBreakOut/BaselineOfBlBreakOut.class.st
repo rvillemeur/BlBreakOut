@@ -14,5 +14,12 @@ BaselineOfBlBreakOut >> baseline: spec [
 
 		spec
 			baseline: 'Bloc'
-			with: [ spec repository: 'github://pharo-graphics/Bloc:dev/src' ] ]
+			with: [ spec repository: 'github://pharo-graphics/Bloc:dev/src' ] ].
+		spec postLoadDoIt: #useMorphicAsPreferedBlocHost.
+]
+
+{ #category : 'baselines' }
+BaselineOfBlBreakOut >> useMorphicAsPreferedBlocHost [
+
+	BlHost preferableHostClass: BlMorphicWindowHost
 ]

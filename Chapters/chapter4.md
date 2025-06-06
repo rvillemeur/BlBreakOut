@@ -241,4 +241,126 @@ lookup of methods works and the interest of inheritance. These concepts are at
 the same time simple and complex. We suggest you to read the chapter chapter ??. 
 Let us look step by step the way different messages are searched and executed.
 
-#### 
+#### aBrickMorph actionWhenBumpedBy: aBall
+
+What is happening when a brick, instance of the class *BrickMorph*, receives the 
+message *actionWhenBumpedBy: aBall* ? The lookup of the different methods 
+involved *actionWhenBumpedBy:* and *soundFeedback* is illustrated by the Figure 
+4.8 and follow the steps.  
+
+Step 1: the message *actionWhenBumpedBy:* is looked up in the class of the 
+message receiver, here *BrickMorph*
+
+Step 2: The class *BrickMorph* defines such a method so it is executed.
+
+Step 3: We skip for now the first message `self flash` and imagine that it got 
+found and executed.  Then the message *soundFeedback* is sent to *self*.
+
+Step 4:*self* represents the original receiver of the message *actionWhenBumpedBy:*. 
+therefore the method *soundFeedback* is looked up in the class *BrickMorph*.
+
+Step 5: The class *BrickMorph* defines a method *soundFeedback* so it is executed.
+
+This behavior is the one we expected, the message are looked up in the class of 
+the object that receives the message
+
+#### aResistantBrickMorph actionWhenBumpedBy: aBall
+
+What is happening when a brick, instance of the class ResistantBrickMorph, receives the message
+actionWhenBumpedBy: aBall? The Figure 4.9 illustrates the steps involved.
+
+Step1: the message `actionWhenBumpedBy:` is looked up in the class of the 
+message receiver, here `ResistantBrickMorph`.
+
+Step2: The class `ResistantBrickMorph` defines such a method so it is executed.
+
+Step3: We skip for now the first messages and act as if this is the third times 
+that the brick is bumped by the ball. Therefore the message super 
+`actionWhenBumpedBy: aBall` should be executed.
+
+Step 4: `super` represents the original receiver of the message 
+`actionWhenBumpedBy:`, the resistant brick. *But* it indicates that the method 
+lookup should start in the superclass **of the class defining the method that 
+call super** (we will illustrate this subtle point in the following example). So 
+the class of the method containing the super expression is 
+`ResistantBrickMorph`, its superclass is `BrickMorph`.
+
+Step 5: The method `actionWhenBumpedBy:` is looked up in the class `BrickMorph`, 
+and found there
+
+Step 6: The method `BrickMorph»actionWhenBumpedBy:` is executed. In particular, 
+the expression `self soundFeedback` is executed.
+
+Step 7: `self` represents the original receiver of the message 
+`actionWhenBumpedBy:`. therefore the method `soundFeedback` is looked up in the 
+class `ResistantBrickMorph`.
+
+Step 8: The class `ResistantBrickMorph` defines a method `soundFeedback` so it 
+is executed.
+
+Step 9: If the method `ResistantBrickMorph»actionWhenBumpedBy:` would define 
+other expressions after the conditional. They would be executed following these 
+rules
+
+The Figure ?? shows the way the methods are invoked. It shows also that a *self* 
+send works as a hook or hole in the method that uses it. When an method contains 
+a self send, it means that subclasses can specialize the behavior by defining 
+new methods that will be invoked instead of the original method.
+
+Therefore we say that `self` is dynamic in the sense that the method executed 
+really depends on the object that receives it (and where the method is defined). 
+It looks like if the methods of the subclasses would take the place of the 
+original method. However this is not really true because a method in a subclass 
+can still invoked the method it hides or overrides. For example the method 
+`ResistantBrickMorph»actio *WhenBumpedBy:` executes some messages that are 
+important realizing the behavior of a resistant brick, then when necessary it 
+invokes the behavior it was hidding, here the default action performed when a 
+brick is touched by a ball (as shown in the The Figure 4.10. `super` is 
+necessary when a method in a subclass wants to do some specific behavior but 
+still be able to perform the original method. Note that **self represents the 
+original receiver**. What is important to see if that `self` always represents 
+the receiver of the original message. In the Step 6 above, when a resistant 
+brick receives the message `actionWhenBumpedBy:` and execute the expression 
+`self soundfeedBack`, even if the expression is defined in the class 
+`BrickMorph`, `self` in this particular execution represents an instance of the 
+class `ResistantBrickMorph` and not `BrickMorph`.  Therefore the noise produced 
+is the one associated with the class `ResistantBrickMorph` because this class 
+redefines the method `soundFeedback`. This behavior is illustrated in the Figure 
+4.10 where the step 3 shows that the method defined in the subclass is called 
+when the `self soundefeedBack` expression is evaluated
+
+**super represents the receiver but changes the method lookup.** `super` changes the 
+way the methods are looked up. As shown in Figure 4.11, imagine that we have an 
+instance of a subclass of `ResistantBrickMorph`, the `PinkResistantBrickMorph` 
+class. When an instance of this new class receives the message 
+`actionWhenBumpedBy:`, the method is looked up starting in the class of the 
+instance, so it starts in the class `PinkResistantBrickMorph`. As the class 
+doesn’t redefine the method `actionWhenBumpedBy:`, the lookup continues in its 
+superclass `ResistantBrickMorph` which defines the method. This method is executed 
+as explained previously. Now when the expression `super actionWhenBumpedBy:` in 
+the method `ResistantBrickMorph»actionWhenBumpedBy:` is executed, the overridden 
+method is looked up in the superclass of the class containing the super send, 
+i.e., in `BrickMorph` the superclass of `ResistantBrickMorph`. What is important to 
+understand is that `super` does not take use the information about the original 
+receiver to perform the lookup of the method.  The lookup initiated by `super` 
+just starts above the class that use it. That’s why we say that `super` is static 
+in the sense that the method lookup does not depend on the class of the receiver 
+but only where the method using it is located in the hierarchy.
+
+Note that this behavior is the one we want. Oftentimes people shortens the exact 
+understanding of `super` by saying that `super` makes the lookup starts in the 
+superclass of the class of the receiver. This is plain wrong. In the last 
+example illustrated Figure4.10 following such wrong definition would means 
+looking `actionWhenBumpedBy:` in `ResistantBrickMorph` (because the superclass 
+of the class of an instance of the class `PinkResistantBrickMorph` is 
+`ResistantBrickMorph`) again and would lead to an infinite loop. No 
+object-oriented languages using the concept of `super` would work with this 
+wrong definition.
+
+
+### Lessons learnt
+
+Sometimes to be able to reuse a class we need to cut its methods in smaller ones.
+- methods are the unit of reuse
+- Inheritance allow incremental definition.
+- self refers to the receiver

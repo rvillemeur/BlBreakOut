@@ -15,6 +15,7 @@ First we start by building the ball and the game field.
 
 
 ### ball
+
 ```lifecode=BlBallElement
 BlElement << #BlBallElement
 	slots: { #speed . #direction . #animation };
@@ -30,6 +31,7 @@ step 3 pixels in x and 3 pixels in y as the speed is 3
 ```lifecode=BlBallElement>>#initialize
 initialize
 
+```st
 	super initialize.
 	self
 		geometry: (BlCircleGeometry new matchExtent: 9 @ 9);
@@ -49,7 +51,6 @@ animation
                 addEventHandler: (BlEventHandler
 			        on: BlAnimationLoopDoneEvent
 			        do: [ :anEvent | parent moveBall ]).
-
 ```
 
 ```lifecode=BlBallElement>>#startAnimation
@@ -82,6 +83,7 @@ as shown in the method 1.7. Once the addMorph: method is executed the ball can
 access the morph it belongs to via the owner message.
 
 ### Ball in the field
+
 In Initialization
 
 However we cannot call this method from within the BallMorph»initializeMethod 

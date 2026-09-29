@@ -35,6 +35,13 @@ BlBreakoutField class >> BrickDescriptionExample [
 	^ (BlBreakoutField new brickClassFromDescription: $S) new openInNewSpace 
 ]
 
+{ #category : 'examples' }
+BlBreakoutField class >> emptyLevelExample [
+
+	<sampleInstance>
+	^ self  generateEmptyTemplate
+]
+
 { #category : 'as yet unclassified' }
 BlBreakoutField class >> gatherAllDefinedLevels [
 
@@ -93,13 +100,6 @@ SESEESES
 SESEESES
 SESSESSS
 '
-]
-
-{ #category : 'examples' }
-BlBreakoutField class >> levelExample [
-
-	<sampleInstance>
-	^ self  generateEmptyTemplate
 ]
 
 { #category : 'default' }
@@ -205,7 +205,7 @@ BlBreakoutField >> brickLine: y ofKind: aBrickClass [
 { #category : 'default' }
 BlBreakoutField >> defaultBatterSize [
 
-	50 @ 10
+	^ 50 @ 10
 ]
 
 { #category : 'bricks' }
@@ -305,7 +305,7 @@ BlBreakoutField >> initializeFieldProperties [
 
 	self
 		geometry: BlRectangleGeometry new;
-		size: BlBrickElement defaultBrickSize * self playFieldSize;
+		extent: BlBrickElement defaultBrickSize * self playFieldSize;
 		background: (Color red alpha: 0.5);
 		border: (BlBorder paint: Color black width: 1).
 		
@@ -316,9 +316,9 @@ BlBreakoutField >> initializeFieldProperties [
 BlBreakoutField >> initializeGame [
 
 	score := 0.
-	lifes := 4.
+	self lifes: 4.
 	level := 1.
-	self dispatchEvent: LifeChanged new.
+	self dispatchEvent: ScoreChanged new.
 	self installCurrentLevel.
 	self pauseGame
 ]
@@ -348,7 +348,8 @@ BlBreakoutField >> initializeKeyboardShortcuts [
 BlBreakoutField >> installCurrentLevel [
 
 	self installLevel: (levels at: level).
-	destroyableBrickNumber := self destroyableBricks size.
+	destroyableBrickNumber := bricks count: [ :each | each class isDestroyable ].
+	self dispatchBonuses
 ]
 
 { #category : 'level handling' }
@@ -375,13 +376,13 @@ BlBreakoutField >> installLevels [
 { #category : 'level handling' }
 BlBreakoutField >> installNextLevel [
 
-	self pauseGame.
 	level := self isLastLevel
 		         ifTrue: [ 1 ]
 		         ifFalse: [ level + 1 ].
-	bricks do: [:each | each delete].
+	self removeAllBricks.
 	self installCurrentLevel.
-	self resetBallAndBatterPositionAtStart
+	self resetBallAndBatterPositionAtStart.
+	self pauseGame
 ]
 
 { #category : 'testing' }
@@ -409,6 +410,13 @@ BlBreakoutField >> lifes [
 	^ lifes
 ]
 
+{ #category : 'private' }
+BlBreakoutField >> lifes: anInteger [
+
+	lifes := anInteger.
+	self dispatchEvent: LifeChanged new
+]
+
 { #category : 'game logic' }
 BlBreakoutField >> lostABall [
 
@@ -416,8 +424,7 @@ BlBreakoutField >> lostABall [
 		self inform: 'You die'.
 		self pauseGame.
 		^ self ].
-	lifes := lifes - 1.
-	self dispatchEvent: LifeChanged new.
+	self lifes: lifes - 1.
 	self resetBallAndBatterPositionAtStart.
 	self pauseGame
 ]
@@ -426,14 +433,8 @@ BlBreakoutField >> lostABall [
 BlBreakoutField >> managePauseGame: anEvent [
 
 	self isPaused
-		ifTrue: [
-			self addShortcut: moveLeftShortcut.
-			self addShortcut: moveRightShortcut.
-			anEvent currentTarget restartPausedGame ]
-		ifFalse: [
-			self removeShortcut: moveLeftShortcut.
-			self removeShortcut: moveRightShortcut.
-			anEvent currentTarget pauseGame ]
+		ifTrue: [ anEvent currentTarget restartPausedGame ]
+		ifFalse: [ anEvent currentTarget pauseGame ]
 ]
 
 { #category : 'positioning' }
@@ -447,7 +448,9 @@ BlBreakoutField >> moveBall [
 		^ self ].
 	b := self brickContainingOrNil: nextPosition.
 	b ifNotNil: [ b actionWhenBumpedBy: ball ].
-	self isLevelTerminated ifTrue: [ self installNextLevel ].
+	self isLevelTerminated ifTrue: [
+		self installNextLevel.
+		^ self ].
 
 	ball moveToNextPosition
 ]
@@ -455,9 +458,8 @@ BlBreakoutField >> moveBall [
 { #category : 'game logic' }
 BlBreakoutField >> newGame [
 
-	self resetBallAndBatterPositionAtStart .
-	self initializeBricks.
-	self installLevel: self class level0.
+	self removeAllBricks.
+	self resetBallAndBatterPositionAtStart.
 	self initializeGame
 ]
 
@@ -465,6 +467,8 @@ BlBreakoutField >> newGame [
 BlBreakoutField >> pauseGame [
 
 	paused := true.
+	self removeShortcut: moveLeftShortcut.
+	self removeShortcut: moveRightShortcut.
 	ball stopAnimation
 ]
 
@@ -475,7 +479,7 @@ BlBreakoutField >> placeBrick: aBrick atBrickCoordinate: aPoint [
 	| brickSize |
 	brickSize := BlBrickElement defaultBrickSize.
 	aBrick extent: brickSize.
-	aBrick position: aPoint * brickSize + self position
+	aBrick position: aPoint * brickSize
 ]
 
 { #category : 'default' }
@@ -484,6 +488,14 @@ BlBreakoutField >> playFieldSize [
 
 	^  self class playFieldSize
 
+]
+
+{ #category : 'bricks' }
+BlBreakoutField >> removeAllBricks [
+	"Remove all the bricks left in the field, including the undestroyable ones"
+
+	bricks do: [ :each | each removeFromParent ].
+	bricks removeAll
 ]
 
 { #category : 'removing' }
@@ -499,6 +511,7 @@ BlBreakoutField >> resetBallAndBatterPositionAtStart [
 	"the size is not available to children until rendered at least once."
 
 	ball positionAtStart.
+	ball direction: -1 @ -1.
 	batter positionAtStart
 ]
 
@@ -511,7 +524,10 @@ BlBreakoutField >> resistantBrickLine: y [
 { #category : 'game logic' }
 BlBreakoutField >> restartPausedGame [
 
+	self isPaused ifFalse: [ ^ self ].
 	paused := false.
+	self addShortcut: moveLeftShortcut.
+	self addShortcut: moveRightShortcut.
 	ball startAnimation
 ]
 
@@ -519,7 +535,7 @@ BlBreakoutField >> restartPausedGame [
 BlBreakoutField >> revealBonuses [
 
 	self destroyableBricks do: [ :each |
-		each hasBonus ifTrue: [ each color: Color green ] ]
+		each hasBonus ifTrue: [ each background: Color green ] ]
 ]
 
 { #category : 'accessing' }
@@ -539,5 +555,5 @@ BlBreakoutField >> setBallAndBatterPositionAtStart [
 { #category : 'scoring - bonus' }
 BlBreakoutField >> stepBonuses [
 
-	activeBonuses do: [ :each | each oneStep: self ]
+	activeBonuses copy do: [ :each | each oneStep: self ]
 ]

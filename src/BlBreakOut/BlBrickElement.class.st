@@ -37,8 +37,11 @@ BlBrickElement >> actionWhenBumpedBy: aBall [
 
 	aBall bounceTopBottom.
 	self parent increaseScoreBy: 10.
+	self hasBonus ifTrue: [ self parent addActiveBonus: bonus ].
 	self parent removeBrick: self.
-	self parent removeChild: self.
+	self addAnimation: (self destructionAnimation
+			 onFinishedDo: [ self removeFromParent ];
+			 yourself)
 ]
 
 { #category : 'accessing' }
@@ -59,6 +62,15 @@ BlBrickElement >> brickSize [
 	^ self class defaultBrickSize
 ]
 
+{ #category : 'feedback' }
+BlBrickElement >> destructionAnimation [
+	"Return the animation played when the receiver is destroyed"
+
+	^ BlOpacityAnimation new
+		  opacity: 0;
+		  duration: 300 milliSeconds
+]
+
 { #category : 'testing' }
 BlBrickElement >> hasBonus [
 
@@ -72,7 +84,7 @@ BlBrickElement >> initialize [
 	super initialize.
 	self
 		geometry: BlRectangleGeometry new;
-		size: self brickSize;
+		extent: self brickSize;
 		background: (Color red alpha: 0.5);
 		border: (BlBorder paint: Color red width: 4);
 		effect: (BlGaussianShadowEffect color: Color black offset: 0@0 width: 2)

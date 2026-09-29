@@ -18,10 +18,12 @@ BatterEnlarger >> end: aField [
 
 { #category : 'accessing' }
 BatterEnlarger >> start: aField [
-| batter |
-super start: aField.
-batter := aField batter.
-batter enlarge.
-batter right > aField right
-ifTrue: [batter position: (aField right - batter extent x)@batter position y]
+
+	| batter width |
+	super start: aField.
+	batter := aField batter.
+	batter enlarge.
+	width := batter requestedExtent x.
+	batter position x + width > aField width ifTrue: [
+		batter position: aField width - width @ batter position y ]
 ]

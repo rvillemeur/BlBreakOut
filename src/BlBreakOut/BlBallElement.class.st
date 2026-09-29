@@ -21,11 +21,11 @@ Class {
 { #category : 'animation' }
 BlBallElement >> animation [
 
-	^ [
-	  [ true ] whileTrue: [
-		  parent moveBall.
-			parent stepBonuses.
-		  (1 / 40) seconds asDelay wait ] ] forkAt: Processor lowestPriority
+	^ BlRepeatedTaskAction new
+		  delay: 25 milliSeconds;
+		  action: [
+			  parent moveBall.
+			  parent stepBonuses ]
 ]
 
 { #category : 'positioning' }
@@ -62,12 +62,11 @@ BlBallElement >> initialize [
 	super initialize.
 	self
 		geometry: (BlCircleGeometry new matchExtent: 9 @ 9);
-		size: 9 @ 9;
+		extent: 9 @ 9;
 		background: Color yellow;
 		border: (BlBorder paint: Color black width: 1).
 	speed := 3.
 	direction :=  -1 @  -1.
-	animation := self animation.
 ]
 
 { #category : 'testing' }
@@ -119,12 +118,12 @@ BlBallElement >> positionAtStart [
 { #category : 'animation' }
 BlBallElement >> startAnimation [
 
+	self stopAnimation.
 	animation := self animation.
-
+	self enqueueTask: animation
 ]
 
 { #category : 'animation' }
 BlBallElement >> stopAnimation [
-
-	animation terminate
+	animation ifNotNil: [ :task | task stop ]
 ]

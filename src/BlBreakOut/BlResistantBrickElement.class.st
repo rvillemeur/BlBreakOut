@@ -34,6 +34,15 @@ BlResistantBrickElement >> decreaseResistanceNumber [
 	resistanceNumber := resistanceNumber - 1
 ]
 
+{ #category : 'feedback' }
+BlResistantBrickElement >> destructionAnimation [
+	"Return the animation played when the receiver is destroyed"
+
+	^ (BlTransformAnimation scale: 0 @ 0)
+		  duration: 300 milliSeconds;
+		  yourself
+]
+
 { #category : 'as yet unclassified' }
 BlResistantBrickElement >> feedbackHitDecrease [
 
@@ -47,7 +56,7 @@ BlResistantBrickElement >> initialize [
 	super initialize.
 	self
 		geometry: BlRectangleGeometry new;
-		size: self brickSize;
+		extent: self brickSize;
 		background: (Color gray alpha: 1);
 		border: (BlBorder paint: Color gray width: 4);
 		effect: (BlGaussianShadowEffect color: Color black offset: 0@0 width: 2).

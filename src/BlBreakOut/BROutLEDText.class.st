@@ -23,6 +23,7 @@ BROutLEDText >> initialize [
 "trick
 when I set the Digital-7 mono family name and set the medium weight, then by default it will lookup for a Digital-7 regular weight font, it won't find it (the TTF only comes with a Medium weight face), and then will use the default font (source sans) ."
 	super initialize.
+	Digital7_Mono ensureRegistered.
 	textPadding :=10.
 	self
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 8);

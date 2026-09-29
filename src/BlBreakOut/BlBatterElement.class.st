@@ -15,8 +15,18 @@ Class {
 { #category : 'sizes' }
 BlBatterElement >> enlarge [
 
-	self extent <= self parent defaultBatterSize ifTrue: [
-		self transformDo: [ :t | t scaleBy: 0.5 ] ]
+	self requestedExtent <= self parent defaultBatterSize ifTrue: [
+		self extent: self requestedExtent * (2 @ 1) ]
+]
+
+{ #category : 'feedback' }
+BlBatterElement >> flash [
+	"Make the receiver blink, as a visual feedback"
+
+	self opacity: 0.3.
+	self addAnimation: (BlOpacityAnimation new
+			 opacity: 1;
+			 duration: 200 milliSeconds)
 ]
 
 { #category : 'initialization' }
@@ -25,7 +35,7 @@ BlBatterElement >> initialize [
 	super initialize.
 	self
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 8);
-		size: 50 @ 10;
+		extent: 50 @ 10;
 		background: (Color blue alpha: 0.6);
 		border: (BlBorder paint:  (Color blue alpha: 0.8) width: 1).
 	speed := 15
@@ -46,7 +56,7 @@ BlBatterElement >> moveRight [
 { #category : 'sizes' }
 BlBatterElement >> normalSize [
 
-	self size: self parent defaultBatterSize
+	self extent: self parent defaultBatterSize
 ]
 
 { #category : 'initialization' }
@@ -62,14 +72,15 @@ BlBatterElement >> positionAtStart [
 { #category : 'sizes' }
 BlBatterElement >> shrink [
 
-	self extent > (self parent defaultBatterSize / 2) ifTrue: [
-		self transformDo: [ :t | t scaleBy: 0.5 ] ]
+	self requestedExtent > (self parent defaultBatterSize / 2) ifTrue: [
+		self extent: self requestedExtent * (0.5 @ 1) ]
 ]
 
 { #category : 'moves' }
 BlBatterElement >> touchedBy: aBall [
 
 	| d y x directionSign center |
+	self flash.
 	center := self position x + (self width / 2).
 	d := (center - aBall position x) abs * 2 / self width.
 	y := (d squared / 2 + 2) sqrt.

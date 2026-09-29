@@ -11,10 +11,20 @@ Class {
 	#tag : 'Helper'
 }
 
+{ #category : 'registration' }
+Digital7_Mono class >> ensureRegistered [
+	"Register the font again if the global font manager lost it, for example after a reset"
+
+	| manager |
+	manager := AeFontManager globalInstance.
+	(manager includesFamilyName: self familyName) ifFalse: [
+		manager registerFacesOnMemory: self fontContentsData ]
+]
+
 { #category : 'accessing' }
 Digital7_Mono class >> familyName [
 	
-	^ 'Digital7'
+	^ 'Digital-7 Mono'
 ]
 
 { #category : 'accessing' }

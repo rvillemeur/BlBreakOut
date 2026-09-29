@@ -20,6 +20,12 @@ Bonus class >> percentage [
 ]
 
 { #category : 'accessing' }
+Bonus >> duration [
+
+	^ duration
+]
+
+{ #category : 'accessing' }
 Bonus >> end: aField [
 
 	aField bonusTerminated: self
@@ -29,7 +35,7 @@ Bonus >> end: aField [
 Bonus >> initialize [
 	"initialize is not defined on Object so we do not do a super initialize"
 
-	duration := 10
+	duration := 400
 ]
 
 { #category : 'as yet unclassified' }
